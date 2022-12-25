@@ -10,7 +10,7 @@ const SignIn: React.FC = () => {
     const [username, setUsername] = React.useState<string>('')
     const [loading, setLoading] = React.useState<boolean>(false)
 
-    const { signIn, signInWithGoogle } = useAuth()
+    const { userInfo, signIn, signInWithGoogle } = useAuth()
 
     const handleFormOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -37,6 +37,13 @@ const SignIn: React.FC = () => {
             }
         })
     }
+
+
+    React.useEffect(() => {
+        if (userInfo) {
+            navigate('/chat')
+        }
+    }, [navigate, userInfo])
 
 
     return (

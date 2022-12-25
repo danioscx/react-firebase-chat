@@ -5,10 +5,12 @@ import { auth, db } from "utils"
 
 
 interface IUser {
-    username: string
+    displayName: string
     status: string | "online"
     uid: string
-    createdAt: string
+    createdAt: string,
+    avatar?: string,
+    email?: string
 }
 
 
@@ -16,18 +18,20 @@ const useAuth = () => {
 
     const [userInfo, setUserInfo] = useState<IUser | null>(null)
 
-    const signIn = async (username: string) => {
+    const signIn = async (displayName: string) => {
         return new Promise<IUser>((resolve, reject) => {
             signInAnonymously(auth).then((userCredential) => {
                 const userRef = doc(db, "users", userCredential.user.uid)
                 updateProfile(userCredential.user, {
-                    displayName: username,
+                    displayName: displayName,
                 }).then(() => {
                     setDoc(userRef, {
-                        username: username,
+                        displayName: displayName,
                         uid: userCredential.user.uid,
                         createdAt: new Date().toISOString(),
                         status: "online",
+                        avatar: userCredential.user.photoURL,
+                        email: userCredential.user.email
                     }).then(() => {
                         getDoc(userRef).then((doc) => {
                             if (doc.exists()) {
@@ -58,10 +62,12 @@ const useAuth = () => {
                 const user = result.user
                 const userRef = doc(db, "users", user.uid)
                 setDoc(userRef, {
-                    username: user.displayName,
+                    displayName: user.displayName,
                     uid: user.uid,
                     createdAt: new Date().toISOString(),
                     status: "online",
+                    avatar: user.photoURL,
+                    email: user.email
                 }).then(() => {
                     getDoc(userRef).then((doc) => {
                         if (doc.exists()) {
