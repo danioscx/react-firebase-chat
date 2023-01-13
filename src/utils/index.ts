@@ -17,4 +17,10 @@ const analytics = getAnalytics(app)
 const db = getFirestore(app)
 const auth = getAuth(app)
 
-export { firebaseConfig, app, analytics, db, auth }
+enum UserInputType {
+    TEXT = 'text',
+    EMOJI = 'emoji',
+    LOCATION = 'location',
+}
+
+export { firebaseConfig, app, analytics, db, auth, UserInputType }

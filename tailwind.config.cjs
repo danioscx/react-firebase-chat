@@ -75,8 +75,14 @@ module.exports = {
       },
       fontFamily: {
         workSans: ["Work Sans", "sans-serif"]
+      },
+      transitionProperty: {
+        'height': 'height',
+        'spacing': 'margin, padding'
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/line-clamp')
+  ],
 }

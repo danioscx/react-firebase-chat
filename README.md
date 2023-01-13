@@ -2,6 +2,8 @@
 
 This is a simple chat app built with React and Firebase. It uses Firebase's Firestore database to store messages and users. It also uses Firebase's authentication to allow users to sign in with their Google accounts and anonymously.
 
+## artwork
+[![Welcome page](artworks/welcome.png)](./artworks/welcome.png)
 
 ## Features
 
@@ -9,6 +11,8 @@ This is a simple chat app built with React and Firebase. It uses Firebase's Fire
 - Sign in anonymously
 - Send messages
 - See who is online
+- Send a emoji
+- Send a location
 
 
 ## Getting Started
@@ -34,13 +38,13 @@ yarn install
 - Go to the Firestore section and create a new database
 - Go to the Rules tab and change the rules to the following:
 
-```
+```js
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
         allow read: if true;
-        allow write: if request.auth != null;
+        allow read, write, update, delete: if request.auth.uid != null;
     }
   }
 }
@@ -48,7 +52,7 @@ service cloud.firestore {
 
 4. Run the app
 
-```
+``` shell
 yarn dev
 ```
 
@@ -56,19 +60,19 @@ yarn dev
 
 1. Install firebase-tools
 
-```
+```shell
 npm install -g firebase-tools
 ```
 
 2. Login to Firebase
 
-```
+```shell
 firebase login
 ```
 
 3. Initialize Firebase
 
-```
+```shell
 firebase init
 ```
 
@@ -76,13 +80,13 @@ firebase init
 
 5. Build the app
 
-```
+```shell
 yarn build
 ```
 
 6. Deploy the app
 
-```
+```shell
 firebase deploy
 ```
 
