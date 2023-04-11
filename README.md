@@ -2,7 +2,7 @@
 
 This is a simple chat app built with React and Firebase. It uses Firebase's Firestore database to store messages and users. It also uses Firebase's authentication to allow users to sign in with their Google accounts and anonymously.
 
-## artwork
+## Artwork
 [![Welcome page](artworks/welcome.png)](./artworks/welcome.png)
 
 ## Features

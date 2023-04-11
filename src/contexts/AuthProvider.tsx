@@ -2,19 +2,20 @@ import { IUser, useAuth } from "hooks"
 import React, { createContext } from "react"
 
 
-const authContext = createContext({
+const AuthContext = createContext({
     userInfo: null as IUser | null,
     signIn: (_username: string): Promise<IUser> => {
         return new Promise((_resolve, reject) => {
             reject("Not implemented!")
         })
     },
-    signInWithGoogle: (): Promise<boolean> => { 
+    signInWithGoogle: (): Promise<boolean> => {
         return new Promise((_resolve, reject) => {
             reject("Not implemented!")
         })
     },
     signOut: () => { },
+    loading: true
 })
 
 const AuthProvider = (props: {
@@ -22,9 +23,9 @@ const AuthProvider = (props: {
 }) => {
     const value = useAuth()
     return (
-        <authContext.Provider value={value}>
+        <AuthContext.Provider value={value}>
             {props?.children}
-        </authContext.Provider>
+        </AuthContext.Provider>
     )
 }
 

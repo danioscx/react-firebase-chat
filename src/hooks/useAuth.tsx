@@ -17,6 +17,7 @@ interface IUser {
 const useAuth = () => {
 
     const [userInfo, setUserInfo] = useState<IUser | null>(null)
+    const [loading, setLoading] = useState<boolean>(true)
 
     const signIn = async (displayName: string) => {
         return new Promise<IUser>((resolve, reject) => {
@@ -87,17 +88,21 @@ const useAuth = () => {
     }
 
     useEffect(() => {
+        setLoading(true)
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 const userRef = doc(db, "users", user.uid)
                 onSnapshot(userRef, (doc) => {
                     if (doc.exists()) {
                         setUserInfo(doc.data() as IUser)
+                        setLoading(false)
                     } else {
+                        setLoading(false)
                         setUserInfo(null)
                     }
                 })
             } else {
+                setLoading(false)
                 setUserInfo(null)
             }
         })
@@ -112,6 +117,7 @@ const useAuth = () => {
         signIn,
         signOut,
         signInWithGoogle,
+        loading
     }
 }
 

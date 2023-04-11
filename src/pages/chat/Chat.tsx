@@ -74,18 +74,6 @@ const Chat: React.FC = () => {
                         </div>
                         <div
                             className={'flex-1 flex flex-col gap-2 overflow-y-auto p-3'}>
-                            {/* <div
-                                className={'flex flex-row w-full justify-between'}>
-                                <h2
-                                    className={'text-2xl font-bold text-black'}>
-                                    Online Now
-                                </h2>
-                                <div>
-                                    <button>
-                                        Hide
-                                    </button>
-                                </div>
-                            </div> */}
                             <Collapse
                                 label={'Online Now'}>
                                 <div

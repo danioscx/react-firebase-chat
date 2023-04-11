@@ -24,3 +24,4 @@ enum UserInputType {
 }
 
 export { firebaseConfig, app, analytics, db, auth, UserInputType }
+export type { Message } from './interfaces'

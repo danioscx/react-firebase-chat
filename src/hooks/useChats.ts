@@ -1,5 +1,5 @@
 import { collection, onSnapshot } from "firebase/firestore"
-import { useEffect, useState } from "react"
+import React from "react"
 import { db } from "utils"
 
 
@@ -13,11 +13,11 @@ const useChats = (props: {
     uid?: string | null
 }) => {
 
-    const [chats, setChats] = useState<IChat[]>([])
-    const [loading, setLoading] = useState(true)
+    const [chats, setChats] = React.useState<IChat[]>([])
+    const [loading, setLoading] = React.useState(true)
 
 
-    useEffect(() => {
+    React.useEffect(() => {
         const chatsRef = collection(db, "chats")
         setLoading(true)
         const unsubscribe = onSnapshot(chatsRef, (snapshot) => {

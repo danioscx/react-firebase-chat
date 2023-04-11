@@ -1,7 +1,9 @@
-import { IUser } from "hooks"
+import { IUser, useAuth } from "hooks"
 import React from "react"
-import { useSpring, animated } from "@react-spring/web"
 import { UserInput } from "./UserInput"
+import styles from './styles/chat.module.css'
+import { Message } from "utils"
+import { useMessages } from "hooks"
 
 interface ConversationProps {
     user?: IUser
@@ -9,24 +11,29 @@ interface ConversationProps {
 
 const Conversation: React.FC<ConversationProps> = (props) => {
     const { user } = props
+    const [text, setText] = React.useState<string>('')
 
-    const [header, api] = useSpring(() => ({
-        from: {
-            transform: 'translateY(-300px)',
-        },
-        to: {
-            transform: 'translateY(0%)',
-        },
-        duration: 500,
-        reset: user ? true : false
-    }), [user?.uid])
+    const { userInfo } = useAuth()
+
+    const { sendMessage, messages } = useMessages({
+        currentUser: userInfo!!,
+        targetUser: user
+    })
+
+    const handleSubmitMessage = (message: Message) => {
+        if (user) {
+            sendMessage(user, message)
+            setText('')
+        }
+    }
+
+    console.log(messages)
 
     return (
         <div
             className={'flex flex-col gap-2 min-h-screen'}>
-            <animated.header
-                style={header}
-                className={'flex flex-col gap-4 p-3'}>
+            <header
+                className={`flex flex-col gap-4 p-3 ${styles.header}`}>
                 <div
                     className={'flex flex-row bg-gray-100 gap-2 py-2 px-3 justify-between rounded-lg'}>
                     <div
@@ -71,7 +78,7 @@ const Conversation: React.FC<ConversationProps> = (props) => {
                         </div>
                     </div>
                 </div>
-            </animated.header>
+            </header>
             {/* Chat List */}
             <div
                 className={'flex flex-1 flex-col gap-2 overflow-auto'}>
@@ -79,7 +86,12 @@ const Conversation: React.FC<ConversationProps> = (props) => {
             {/* Chat input */}
             <div>
                 <UserInput
-                    key={user?.uid}/>
+                    value={text}
+                    onChange={(value) => {
+                        setText(value)
+                    }}
+                    onSubmit={handleSubmitMessage}
+                    key={user?.uid} />
             </div>
         </div>
     )

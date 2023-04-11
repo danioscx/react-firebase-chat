@@ -1,4 +1,5 @@
 import welcome from 'assets/welcome.svg'
+import { Loader } from 'components'
 import { useAuth } from 'hooks'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -10,7 +11,7 @@ const SignIn: React.FC = () => {
     const [username, setUsername] = React.useState<string>('')
     const [loading, setLoading] = React.useState<boolean>(false)
 
-    const { userInfo, signIn, signInWithGoogle } = useAuth()
+    const { userInfo, signIn, signInWithGoogle, loading: authLoading } = useAuth()
 
     const handleFormOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -44,6 +45,13 @@ const SignIn: React.FC = () => {
             navigate('/chat')
         }
     }, [navigate, userInfo])
+
+
+    if (authLoading) {
+        return (
+            <Loader/>
+        )
+    }
 
 
     return (

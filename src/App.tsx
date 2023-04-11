@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import { Chat, SignIn } from './pages'
+const Chat = React.lazy(() => import('./pages').then(({ Chat }) => ({ default: Chat })))
+const SignIn = React.lazy(() => import('./pages').then(({ SignIn }) => ({ default: SignIn })))
 
 const App: React.FC = () => {
 

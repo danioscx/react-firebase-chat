@@ -1,22 +1,24 @@
 import mapboxgl from "mapbox-gl"
-import 'mapbox-gl/dist/mapbox-gl.css'
 import React from "react"
 
 interface PickerProps {
     onChange?: (coordinates: [number, number]) => void
 }
 
+const accessToken = import.meta.env.VITE_APP_MAPBOX_API_KEY
+
 const Picker: React.FC<PickerProps> = (props) => {
 
-    mapboxgl.accessToken = import.meta.env.VITE_APP_MAPBOX_API_KEY
+    mapboxgl.accessToken = accessToken
 
     const {
-        onChange = (coordinates: [number, number]) => { }
+        onChange
     } = props
 
     const mapRef = React.useRef<HTMLDivElement>(null)
 
     React.useEffect(() => {
+        import('mapbox-gl/dist/mapbox-gl.css')
         let map: mapboxgl.Map | null = null
         navigator.geolocation.getCurrentPosition((position) => {
             const { latitude, longitude } = position.coords
@@ -70,9 +72,14 @@ const Picker: React.FC<PickerProps> = (props) => {
     )
 }
 
+interface LocationPickerData {
+    address: string,
+    coordinates: [number, number]
+}
+
 interface LocationPickerProps {
     children?: React.ReactNode
-    onClick?: (coordinates: [number, number]) => void
+    onClick?: (data: LocationPickerData) => void
 }
 
 interface MapboxGeoJSONFeatureProperties {
@@ -126,7 +133,7 @@ const LocationPicker: React.FC<LocationPickerProps> = (props) => {
 
     const handleInputOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && search.length > 2) {
-            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${search}.json?proximity=${coordinates}&access_token=${import.meta.env.VITE_APP_MAPBOX_API_KEY}`)
+            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${search}.json?proximity=${coordinates}&access_token=${accessToken}`)
                 .then((res) => res.json())
                 .then((data) => {
                     setMapboxData(data)
@@ -136,7 +143,7 @@ const LocationPicker: React.FC<LocationPickerProps> = (props) => {
 
     const handleChangeCoordinates = (coordinates: [number, number]) => {
         setCoordinates(coordinates)
-        fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates.flat()}.json?limit=1&access_token=${import.meta.env.VITE_APP_MAPBOX_API_KEY}`)
+        fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates.flat()}.json?limit=1&access_token=${accessToken}`)
             .then((res) => res.json())
             .then((data) => {
                 setMapboxData(data)
@@ -166,6 +173,14 @@ const LocationPicker: React.FC<LocationPickerProps> = (props) => {
                     {
                         mapboxData?.features.map((feature) => (
                             <div
+                                onClick={() => {
+                                    if (props.onClick) {
+                                        props.onClick({
+                                            address: feature.place_name,
+                                            coordinates: feature.center
+                                        })
+                                    }
+                                }}
                                 key={feature.id}
                                 className={'flex flex-col gap-2 bg-white p-2 rounded-lg cursor-pointer'}>
                                 <div

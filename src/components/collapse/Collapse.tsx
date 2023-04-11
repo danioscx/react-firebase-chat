@@ -1,4 +1,3 @@
-import { animated, useTrail, useTransition } from '@react-spring/web'
 import React, { useEffect } from 'react'
 
 interface CollapseProps {
@@ -21,29 +20,9 @@ const Collapse: React.FC<CollapseProps> = (props) => {
         onCollapse,
     } = props
 
-    const [childrens, setChildrens] = React.useState(React.Children.toArray(children))
-
     const [collapse, setCollapse] = React.useState(collapsed)
 
-    const trails = useTrail(childrens.length,{
-        from: {
-            opacity: 0,
-            height: 0,
-            y: 0
-        },
-        to: {
-            opacity: !collapse ? 1 : 0,
-            y: !collapse ? 0 : -200,
-            height: !collapse ? 120 : 0,
-        },
-        duration: 1000,
-        config: {
-            mass: 1,
-            tension: 200,
-            friction: 20,
-        },
-        delay: 200,
-    })
+    const divRef = React.useRef<HTMLDivElement>(null)
 
     const handleOnClick = () => {
         onCollapse && onCollapse(!collapsed)
@@ -51,10 +30,16 @@ const Collapse: React.FC<CollapseProps> = (props) => {
     }
 
     useEffect(() => {
-        if (children) {
-            setChildrens(React.Children.toArray(children))
+        if (divRef.current && collapse) {
+            divRef.current.style.height = '0px'
+
+        } else if (divRef.current && !collapse) {
+            divRef.current.style.height = `${divRef.current.scrollHeight}px`
         }
-    }, [children])
+    }, [collapse, children])
+
+
+
 
     return (
         <div
@@ -81,17 +66,12 @@ const Collapse: React.FC<CollapseProps> = (props) => {
                     }
                 </div>
             </div>
-            {
-                trails.map((style, index) => {
-                    return (
-                        <animated.div
-                            key={index}
-                            style={style}>
-                            {childrens[index]}
-                        </animated.div>
-                    )
-                })
-            }
+            <div
+                style={{
+                    height: !collapse ? '0px' : `${divRef.current?.scrollHeight}px`
+                }}
+                className={'transition-height duration-300 ease-in-out overflow-hidden'}
+                ref={divRef}>{children}</div>
         </div>
     )
 }
